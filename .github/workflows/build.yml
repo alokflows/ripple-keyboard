@@ -1,0 +1,62 @@
+name: Ripple Keyboard CI
+
+# Adapted from the upstream FlorisBoard `android.yml` workflow (Apache-2.0).
+# See RIPPLE-FORK.md for attribution details.
+
+on:
+  push:
+    branches: [ ripple ]
+    paths-ignore:
+      - ".github/ISSUE_TEMPLATE/**"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/FUNDING.yml"
+      - ".editorconfig"
+      - "fastlane/**"
+      - "**.md"
+      - "LICENSE"
+  pull_request:
+    branches: [ ripple ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: gradle/actions/wrapper-validation@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+
+      - name: Set up CMake and Ninja
+        uses: lukka/get-cmake@v4.0.2
+
+      # The :lib:native module compiles a Rust static library (see
+      # lib/native/src/main/rust/CMakeLists.txt) for each Android ABI.
+      # ubuntu-latest ships rustup/cargo preinstalled; add the Android
+      # targets explicitly so the CMake build does not have to.
+      - name: Add Rust Android targets
+        run: |
+          rustup target add \
+            aarch64-linux-android \
+            armv7-linux-androideabi \
+            x86_64-linux-android \
+            i686-linux-android
+
+      - name: Build debug APK
+        run: ./gradlew clean assembleDebug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ripple-keyboard-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
