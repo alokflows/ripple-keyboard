@@ -24,6 +24,11 @@ listed here as they land. As of the initial foundation commit:
   `.github/workflows/android.yml`) that builds a debug APK on the `ripple`
   branch.
 - Added this `RIPPLE-FORK.md` attribution notice.
+- Pinned the `patrickgold-jetpref` dependency to the released `0.3.0-rc01`
+  instead of upstream v0.5.2's `20251119T222500Z-SNAPSHOT`. That snapshot has
+  been purged from the Maven snapshots repository (snapshots expire), which made
+  the tag unbuildable; `0.3.0-rc01` is the released jetpref version used by the
+  next upstream release line (v0.6.0-alpha).
 
 No upstream source files, copyright headers, or license text have been removed
 or altered.
