@@ -30,8 +30,37 @@ listed here as they land. As of the initial foundation commit:
   the tag unbuildable; `0.3.0-rc01` is the released jetpref version used by the
   next upstream release line (v0.6.0-alpha).
 
-No upstream source files, copyright headers, or license text have been removed
-or altered.
+Slice 2 — minimal rebrand + the Ripple cross-device feature:
+
+- **Rebrand (minimal-diff):** app label → "Ripple Keyboard" (`app_name` +
+  debug/beta `floris_app_name` resValues), `applicationId` →
+  `com.ripple.keyboard` (debug builds keep the `.debug` suffix). The Kotlin
+  namespace stays `dev.patrickgold.florisboard` to keep the upstream diff thin;
+  all manifest provider authorities use `${applicationId}` /
+  `BuildConfig.APPLICATION_ID` and follow the new id automatically.
+- **Ripple core** (new package `dev.patrickgold.florisboard.ripple`, ported from
+  the Ripple product repo `alokflows/ripple`): `RippleCrypto` (AES-256-GCM,
+  PBKDF2-210k, byte-compatible with Ripple's JS/Rust cores; cross-language
+  vectors asserted by `RippleCryptoTest`, run by `./gradlew :app:testDebugUnitTest`
+  and CI), `RippleClient` (one OkHttp WebSocket to the blind relay — only a
+  SHA-256 room hash and sealed blobs ever leave the device), `RippleManager`
+  (process-wide socket owner + `StateFlow`, persisted pairing code, registered
+  as a lazy `FlorisApplication` manager), `RippleConnectionService` (foreground
+  `dataSync` service keeping the socket alive). New manifest entries: INTERNET +
+  FOREGROUND_SERVICE(_DATA_SYNC) permissions and the service. New dependency:
+  OkHttp 4.12.0.
+- **Ripple panel:** `ImeUiMode.RIPPLE`, `KeyCode.IME_UI_MODE_RIPPLE` (-214) +
+  predefined key `ime_ui_mode_ripple`, switching in `KeyboardManager`, and
+  `ripple/RippleInputLayout.kt` — connect view (enter pairing code), received
+  messages as chips that insert at the cursor on tap, and a compose-and-send
+  row. Reached via a Smartbar quick action (default arrangement, Devices icon).
+  Panel elements are registered Snygg theme elements (`ripple-*`), so any theme
+  can style them.
+- **CI:** the build workflow also runs the JVM unit tests (crypto vectors
+  included).
+
+Upstream copyright headers and license text are unaltered; upstream source files
+are modified only at the integration points listed above.
 
 ## Trademark / endorsement notice
 
