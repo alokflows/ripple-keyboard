@@ -8,6 +8,12 @@
     <!-- Permission needed to create notifications on devices running Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
+    <!-- Ripple: the encrypted cross-device socket needs network access, and a
+          dataSync foreground service keeps it alive while only the keyboard is up -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+
     <!-- Android 11+ only: Define that FlorisBoard requests to see all apps that
           ship with an IME or Spell Check service. This is used to guide the user
           in the Settings Ui why FlorisBoard may not be working.
@@ -49,6 +55,13 @@
             </intent-filter>
             <meta-data android:name="android.view.im" android:resource="@xml/method"/>
         </service>
+
+        <!-- Ripple connection service: keeps the shared encrypted socket alive
+              while only the keyboard is on screen (started on pair, stopped on leave) -->
+        <service
+            android:name="dev.patrickgold.florisboard.ripple.RippleConnectionService"
+            android:foregroundServiceType="dataSync"
+            android:exported="false"/>
 
         <!-- Spellchecker service -->
         <service

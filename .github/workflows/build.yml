@@ -54,6 +54,11 @@ jobs:
       - name: Build debug APK
         run: ./gradlew clean assembleDebug
 
+      # JVM unit tests, including the Ripple cross-language crypto vectors
+      # (RippleCryptoTest) — these prove interop with the web/desktop clients.
+      - name: Run JVM unit tests
+        run: ./gradlew :app:testDebugUnitTest
+
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
