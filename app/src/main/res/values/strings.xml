@@ -79,6 +79,8 @@
     <string name="quick_action__ime_ui_mode_clipboard__tooltip">Open clipboard history</string>
     <string name="quick_action__ime_ui_mode_media" comment="Please mind the limited available space for the quick action strings">Emoji</string>
     <string name="quick_action__ime_ui_mode_media__tooltip">Open emoji panel</string>
+    <string name="quick_action__ime_ui_mode_ripple" comment="Please mind the limited available space for the quick action strings">Ripple</string>
+    <string name="quick_action__ime_ui_mode_ripple__tooltip">Open the Ripple cross-device panel</string>
     <string name="quick_action__language_switch" comment="Please mind the limited available space for the quick action strings">Switch language</string>
     <string name="quick_action__language_switch__tooltip">Perform language switch</string>
     <string name="quick_action__settings" comment="Please mind the limited available space for the quick action strings">Settings</string>
@@ -290,6 +292,17 @@
 
     <string name="snygg__rule_element__one_handed_panel">One-handed panel</string>
     <string name="snygg__rule_element__one_handed_panel_button">One-handed panel button</string>
+
+    <string name="snygg__rule_element__ripple_header">Ripple header</string>
+    <string name="snygg__rule_element__ripple_header_button">Ripple header button</string>
+    <string name="snygg__rule_element__ripple_header_text">Ripple header text</string>
+    <string name="snygg__rule_element__ripple_content">Ripple content</string>
+    <string name="snygg__rule_element__ripple_status_text">Ripple status text</string>
+    <string name="snygg__rule_element__ripple_chip">Ripple received message chip</string>
+    <string name="snygg__rule_element__ripple_compose_row">Ripple compose row</string>
+    <string name="snygg__rule_element__ripple_compose_field">Ripple compose field</string>
+    <string name="snygg__rule_element__ripple_key">Ripple inline key</string>
+    <string name="snygg__rule_element__ripple_action_button">Ripple action button</string>
 
     <string name="snygg__rule_element__smartbar">Smartbar</string>
     <string name="snygg__rule_element__smartbar_shared_actions_row">Smartbar shared actions row</string>
@@ -675,6 +688,18 @@
     <string name="crash_multiple_notification__title" comment="Title of the notification for consecutive crashes">FlorisBoard seems to stop working repeatedly…</string>
     <string name="crash_multiple_notification__body" comment="Body of the notification for consecutive crashes">Falling back to previous keyboard to stop infinite crash loop. Tap to view error details</string>
 
+
+    <!-- Ripple cross-device panel strings -->
+    <string name="ripple__header_title">Ripple</string>
+    <string name="ripple__status_not_paired">Not paired</string>
+    <string name="ripple__status_connecting">Connecting…</string>
+    <string name="ripple__status_connected">Connected</string>
+    <string name="ripple__status_offline">Offline</string>
+    <string name="ripple__status_waiting">Waiting for other devices</string>
+    <string name="ripple__connect_hint">Enter the pairing code shown on your other device</string>
+    <string name="ripple__connect_button">Connect</string>
+    <string name="ripple__empty_message">Received text appears here — tap a message to insert it at the cursor.</string>
+    <string name="ripple__compose_hint">Tap to write to your devices…</string>
 
     <!-- Clipboard strings -->
     <string name="clipboard__header_title">Clipboard</string>

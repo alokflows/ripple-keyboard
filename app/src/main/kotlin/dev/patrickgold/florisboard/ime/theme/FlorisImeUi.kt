@@ -234,6 +234,47 @@ enum class FlorisImeUi(val elementName: String, val resId: Int?) {
         resId = R.string.snygg__rule_element__one_handed_panel_button,
     ),
 
+    RippleHeader(
+        elementName = "ripple-header",
+        resId = R.string.snygg__rule_element__ripple_header,
+    ),
+    RippleHeaderButton(
+        elementName = "ripple-header-button",
+        resId = R.string.snygg__rule_element__ripple_header_button,
+    ),
+    RippleHeaderText(
+        elementName = "ripple-header-text",
+        resId = R.string.snygg__rule_element__ripple_header_text,
+    ),
+    RippleContent(
+        elementName = "ripple-content",
+        resId = R.string.snygg__rule_element__ripple_content,
+    ),
+    RippleStatusText(
+        elementName = "ripple-status-text",
+        resId = R.string.snygg__rule_element__ripple_status_text,
+    ),
+    RippleChip(
+        elementName = "ripple-chip",
+        resId = R.string.snygg__rule_element__ripple_chip,
+    ),
+    RippleComposeRow(
+        elementName = "ripple-compose-row",
+        resId = R.string.snygg__rule_element__ripple_compose_row,
+    ),
+    RippleComposeField(
+        elementName = "ripple-compose-field",
+        resId = R.string.snygg__rule_element__ripple_compose_field,
+    ),
+    RippleKey(
+        elementName = "ripple-key",
+        resId = R.string.snygg__rule_element__ripple_key,
+    ),
+    RippleActionButton(
+        elementName = "ripple-action-button",
+        resId = R.string.snygg__rule_element__ripple_action_button,
+    ),
+
     Smartbar(
         elementName = "smartbar",
         resId = R.string.snygg__rule_element__smartbar,

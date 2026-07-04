@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.ContentPasteGo
 import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.FontDownload
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -247,6 +248,9 @@ fun ComputingEvaluator.computeImageVector(data: KeyData): ImageVector? {
         }
         KeyCode.IME_UI_MODE_CLIPBOARD -> {
             Icons.AutoMirrored.Outlined.Assignment
+        }
+        KeyCode.IME_UI_MODE_RIPPLE -> {
+            Icons.Default.Devices
         }
         KeyCode.LANGUAGE_SWITCH -> {
             Icons.Default.Language

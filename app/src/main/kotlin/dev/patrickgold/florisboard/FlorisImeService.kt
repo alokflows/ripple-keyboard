@@ -102,6 +102,7 @@ import dev.patrickgold.florisboard.ime.text.TextInputLayout
 import dev.patrickgold.florisboard.ime.theme.FlorisImeTheme
 import dev.patrickgold.florisboard.ime.theme.FlorisImeUi
 import dev.patrickgold.florisboard.ime.theme.WallpaperChangeReceiver
+import dev.patrickgold.florisboard.ripple.RippleInputLayout
 import dev.patrickgold.florisboard.lib.compose.SystemUiIme
 import dev.patrickgold.florisboard.lib.devtools.LogTopic
 import dev.patrickgold.florisboard.lib.devtools.flogError
@@ -679,6 +680,7 @@ class FlorisImeService : LifecycleInputMethodService() {
                                 ImeUiMode.TEXT -> TextInputLayout()
                                 ImeUiMode.MEDIA -> MediaInputLayout()
                                 ImeUiMode.CLIPBOARD -> ClipboardInputLayout()
+                                ImeUiMode.RIPPLE -> RippleInputLayout()
                             }
                         }
                     }
