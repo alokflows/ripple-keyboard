@@ -226,7 +226,15 @@ fun RippleInputLayout(
             val received = remember(rippleState.messages) {
                 rippleState.messages.filter { !it.mine }.asReversed()
             }
-            if (received.isEmpty()) {
+            // While the compose grid is open the message list is hidden so the
+            // grid gets the whole panel below the compose row. This keeps the
+            // key rows at a finger-sized height (like the connect view's grid);
+            // splitting the space with the list squeezed them to ~25dp — labels
+            // sat glyph-close to the row boundaries, so taps at a visible label
+            // routinely landed one row off.
+            if (composeExpanded) {
+                // Skip the list entirely.
+            } else if (received.isEmpty()) {
                 SnyggText(
                     elementName = FlorisImeUi.RippleStatusText.elementName,
                     modifier = Modifier

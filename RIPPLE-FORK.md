@@ -105,6 +105,12 @@ Slice 3 — Ripple settings screen + consent mode:
   line of content height in the ~25dp rows that layout gives each grid row; the
   grid keys are now padding-free clickable `SnyggBox`es (same `ripple-key` theme
   element, centered content) in `RippleInputLayout.InlineKeyGrid`.
+- **Fix (panel):** the received-messages list is now hidden while the compose key
+  grid is open, so the grid gets the whole panel below the compose row — splitting
+  the space with the list squeezed the key rows to ~25dp, leaving labels
+  glyph-close to the row boundaries so taps at a visible label routinely landed
+  one row off; the rows now match the connect-view grid's verified finger-sized
+  height.
 
 Upstream copyright headers and license text are unaltered; upstream source files
 are modified only at the integration points listed above.
