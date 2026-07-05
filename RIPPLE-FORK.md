@@ -59,6 +59,47 @@ Slice 2 — minimal rebrand + the Ripple cross-device feature:
 - **CI:** the build workflow also runs the JVM unit tests (crypto vectors
   included).
 
+Slice 3 — Ripple settings screen + consent mode:
+
+- **Settings screen** (new package `dev.patrickgold.florisboard.app.settings.ripple`,
+  `RippleScreen.kt`): a "Ripple" section in FlorisBoard's Settings app, built with
+  the upstream `FlorisScreen` + jetpref preference composables. It shows the
+  connection status and the current pairing code (masked as dots, with a show/hide
+  toggle and a copy-to-clipboard action), a "Change code" action (a
+  `JetPrefAlertDialog` + `JetPrefTextField` that re-pairs), and a "Disconnect"
+  action. The pairing code is **not** duplicated into jetpref — the screen reads
+  and mutates it through the existing `RippleManager` (`savedCode`, `connect`,
+  `leave`). Registered like every other screen: a `Routes.Settings.Ripple`
+  deeplink (`settings/ripple`), an entry in `Routes.AppNavHost`, and a `Preference`
+  row (Devices icon) on `HomeScreen`.
+- **Consent mode** (new `ripple.ConsentMode` enum: `AUTO` / `ASK` / `OFF`, default
+  `ASK`) governs incoming text from a paired device. Exact semantics:
+  - `AUTO` — an incoming message is committed at the cursor immediately **while the
+    keyboard is visible**, and is also kept in the panel as a chip so a message
+    that arrives while the keyboard is hidden is not lost.
+  - `ASK` — the previous (default) behavior: messages wait in the panel as
+    tap-to-insert chips; nothing is inserted without a tap.
+  - `OFF` — the panel receives nothing: incoming messages and received history are
+    dropped at ingest in `RippleManager` (only the user's own pending sends are
+    kept). Sending still works.
+  The `AUTO` / `OFF` decisions are pure data on the enum (`receivesIntoPanel`,
+  `autoCommits`), enforced in `RippleManager.onEvent` at ingest. `AUTO` never
+  blocks a keypress — it reacts to already-decrypted messages via a process-wide
+  `RippleManager.autoCommits` `SharedFlow`, collected by `FlorisImeService` (guarded
+  by `isWindowShown`), off the network path.
+- **Prefs** (`FlorisPreferenceModel.Ripple` group): `ripple__consent_mode` (enum,
+  default `ASK`) and `ripple__keep_connection_alive` (boolean, default `true`).
+  Enum labels/descriptions wired through `EnumDisplayEntries`. The keep-alive
+  toggle gates the foreground `RippleConnectionService`: `RippleManager.connect`
+  only starts it when the pref is on, and `RippleManager` observes the pref to
+  start/stop the service live while connected.
+- **Tests:** `RippleConsentModeTest` pins the consent contract (receive/commit
+  matrix per mode, `ASK` default, exactly one auto-committing mode) as JVM unit
+  tests; run by `./gradlew :app:testDebugUnitTest` and CI.
+- **CI:** the build workflow trigger now also fires on `slice-*` push branches.
+- **Strings:** default-locale `settings__ripple__*`, `pref__ripple__*`, and
+  `enum__consent_mode__*` resources added following upstream naming.
+
 Upstream copyright headers and license text are unaltered; upstream source files
 are modified only at the integration points listed above.
 

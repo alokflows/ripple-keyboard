@@ -58,6 +58,7 @@ import dev.patrickgold.florisboard.ime.theme.extCoreTheme
 import dev.patrickgold.florisboard.lib.ext.ExtensionComponentName
 import dev.patrickgold.florisboard.lib.observeAsTransformingState
 import dev.patrickgold.florisboard.lib.util.VersionName
+import dev.patrickgold.florisboard.ripple.ConsentMode
 import dev.patrickgold.jetpref.datastore.annotations.Preferences
 import dev.patrickgold.jetpref.datastore.jetprefDataStoreOf
 import dev.patrickgold.jetpref.datastore.model.LocalTime
@@ -660,6 +661,18 @@ abstract class FlorisPreferenceModel : PreferenceModel() {
         val showOnScreenKeyboard = boolean(
             key = "physical_keyboard__show_on_screen_keyboard",
             default = false,
+        )
+    }
+
+    val ripple = Ripple()
+    inner class Ripple {
+        val consentMode = enum(
+            key = "ripple__consent_mode",
+            default = ConsentMode.ASK,
+        )
+        val keepConnectionAlive = boolean(
+            key = "ripple__keep_connection_alive",
+            default = true,
         )
     }
 

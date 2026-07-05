@@ -17,10 +17,20 @@
 package dev.patrickgold.florisboard.ripple
 
 import android.content.Context
+import dev.patrickgold.florisboard.app.FlorisPreferenceStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.update
+import org.florisboard.lib.kotlin.collectIn
 import java.security.SecureRandom
 import java.util.Base64
 
@@ -48,6 +58,8 @@ data class RippleState(
  */
 class RippleManager(context: Context) {
     private val appContext = context.applicationContext
+    private val prefs by FlorisPreferenceStore
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     /** Stable per-install device id (host model + locked rooms key on it). */
     val did: String = stableDid(appContext)
@@ -57,11 +69,39 @@ class RippleManager(context: Context) {
     private val _state = MutableStateFlow(RippleState())
     val state: StateFlow<RippleState> = _state.asStateFlow()
 
+    /**
+     * Fires the plain text of each newly received message when the active consent
+     * mode is [ConsentMode.AUTO]. The IME collects this and commits it at the
+     * cursor while the keyboard is visible. Replay is 0 (a commit only makes sense
+     * live) and the buffer drops the oldest so a burst can never block ingest.
+     */
+    private val _autoCommits = MutableSharedFlow<String>(
+        replay = 0,
+        extraBufferCapacity = 8,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val autoCommits: SharedFlow<String> = _autoCommits.asSharedFlow()
+
     val isConnected: Boolean get() = client?.isConnected == true
     val currentCode: String get() = _state.value.code
 
+    /** The consent mode chosen in settings; read fresh at each ingest. */
+    private val consentMode: ConsentMode get() = prefs.ripple.consentMode.get()
+
     /** The last code we paired with, remembered across launches (null if none). */
     val savedCode: String? get() = prefs().getString("code", null)?.takeIf { it.isNotBlank() }
+
+    init {
+        // Keep the foreground connection service in sync with its toggle: start or
+        // stop it as the preference changes while a connection is live.
+        prefs.ripple.keepConnectionAlive.asFlow().drop(1).collectIn(scope) { keepAlive ->
+            val code = _state.value.code
+            if (isConnected && code.isNotEmpty()) {
+                if (keepAlive) RippleConnectionService.start(appContext, code)
+                else RippleConnectionService.stop(appContext)
+            }
+        }
+    }
 
     fun connect(code: String) {
         val normalized = code.trim()
@@ -72,7 +112,9 @@ class RippleManager(context: Context) {
         client = c
         _state.update { RippleState(code = normalized) }
         c.connect(normalized)
-        RippleConnectionService.start(appContext, normalized)
+        if (prefs.ripple.keepConnectionAlive.get()) {
+            RippleConnectionService.start(appContext, normalized)
+        }
     }
 
     /** Re-pair with the remembered code, so the user isn't asked again. */
@@ -103,11 +145,26 @@ class RippleManager(context: Context) {
         when (event) {
             is RippleEvent.Status -> _state.update { it.copy(state = event.state) }
 
-            is RippleEvent.Incoming -> _state.update { it.copy(messages = it.messages + event.message) }
+            is RippleEvent.Incoming -> {
+                val mode = consentMode
+                // OFF: the panel receives nothing — drop the message at ingest.
+                if (!mode.receivesIntoPanel) return
+                _state.update { it.copy(messages = it.messages + event.message) }
+                // AUTO: also hand the text to the IME for an immediate cursor commit.
+                if (mode.autoCommits) _autoCommits.tryEmit(event.message.text)
+            }
 
-            is RippleEvent.History -> _state.update { s ->
-                val mineKept = s.messages.filter { it.mine }
-                s.copy(messages = (event.messages + mineKept).sortedBy { it.t })
+            is RippleEvent.History -> {
+                // OFF: no received history enters the panel either. Any pending
+                // messages we sent ourselves are always kept.
+                if (!consentMode.receivesIntoPanel) {
+                    _state.update { s -> s.copy(messages = s.messages.filter { it.mine }) }
+                    return
+                }
+                _state.update { s ->
+                    val mineKept = s.messages.filter { it.mine }
+                    s.copy(messages = (event.messages + mineKept).sortedBy { it.t })
+                }
             }
 
             is RippleEvent.Acked -> _state.update { s ->

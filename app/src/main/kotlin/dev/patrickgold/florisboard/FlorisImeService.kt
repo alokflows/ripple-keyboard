@@ -258,6 +258,7 @@ class FlorisImeService : LifecycleInputMethodService() {
     private val editorInstance by editorInstance()
     private val keyboardManager by keyboardManager()
     private val nlpManager by nlpManager()
+    private val rippleManager by rippleManager()
     private val subtypeManager by subtypeManager()
     private val themeManager by themeManager()
 
@@ -296,6 +297,14 @@ class FlorisImeService : LifecycleInputMethodService() {
         }
         prefs.physicalKeyboard.showOnScreenKeyboard.asFlow().collectIn(lifecycleScope) {
             updateInputViewShown()
+        }
+        // Ripple consent mode AUTO: commit incoming text at the cursor as it arrives,
+        // but only while the keyboard is visible. This never blocks a keypress — it
+        // reacts to already-decrypted messages off the network path.
+        rippleManager.autoCommits.collectIn(lifecycleScope) { text ->
+            if (isWindowShown) {
+                editorInstance.commitText(text)
+            }
         }
         @Suppress("DEPRECATION") // We do not retrieve the wallpaper but only listen to changes
         registerReceiver(wallpaperChangeReceiver, IntentFilter(Intent.ACTION_WALLPAPER_CHANGED))

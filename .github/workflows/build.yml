@@ -5,7 +5,7 @@ name: Ripple Keyboard CI
 
 on:
   push:
-    branches: [ ripple ]
+    branches: [ ripple, 'slice-*' ]
     paths-ignore:
       - ".github/ISSUE_TEMPLATE/**"
       - ".github/PULL_REQUEST_TEMPLATE.md"

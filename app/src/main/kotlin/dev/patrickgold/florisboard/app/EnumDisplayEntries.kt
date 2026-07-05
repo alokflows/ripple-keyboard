@@ -43,6 +43,7 @@ import dev.patrickgold.florisboard.ime.text.gestures.SwipeAction
 import dev.patrickgold.florisboard.ime.text.key.KeyHintMode
 import dev.patrickgold.florisboard.ime.text.key.UtilityKeyAction
 import dev.patrickgold.florisboard.ime.theme.ThemeMode
+import dev.patrickgold.florisboard.ripple.ConsentMode
 import dev.patrickgold.jetpref.datastore.ui.ListPreferenceEntry
 import dev.patrickgold.jetpref.datastore.ui.listPrefEntries
 import dev.patrickgold.jetpref.material.ui.ColorRepresentation
@@ -126,6 +127,28 @@ private val ENUM_DISPLAY_ENTRIES = mapOf<Pair<KClass<*>, String>, @Composable ()
                 key = ClipboardSyncBehavior.ALL_EVENTS,
                 label = stringRes(R.string.enum__clipboard_sync_behavior__all_events),
                 description = stringRes(R.string.enum__clipboard_sync_behavior__all_events__description),
+            )
+        }
+    },
+    ConsentMode::class to DEFAULT to {
+        listPrefEntries {
+            entry(
+                key = ConsentMode.AUTO,
+                label = stringRes(R.string.enum__consent_mode__auto),
+                description = stringRes(R.string.enum__consent_mode__auto__description),
+                showDescriptionOnlyIfSelected = true,
+            )
+            entry(
+                key = ConsentMode.ASK,
+                label = stringRes(R.string.enum__consent_mode__ask),
+                description = stringRes(R.string.enum__consent_mode__ask__description),
+                showDescriptionOnlyIfSelected = true,
+            )
+            entry(
+                key = ConsentMode.OFF,
+                label = stringRes(R.string.enum__consent_mode__off),
+                description = stringRes(R.string.enum__consent_mode__off__description),
+                showDescriptionOnlyIfSelected = true,
             )
         }
     },

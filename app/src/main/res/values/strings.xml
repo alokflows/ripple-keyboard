@@ -701,6 +701,30 @@
     <string name="ripple__empty_message">Received text appears here — tap a message to insert it at the cursor.</string>
     <string name="ripple__compose_hint">Tap to write to your devices…</string>
 
+    <!-- Ripple settings screen strings -->
+    <string name="settings__ripple__title">Ripple</string>
+    <string name="pref__ripple__group_connection__label">Connection</string>
+    <string name="pref__ripple__status__label">Status</string>
+    <string name="pref__ripple__pairing_code__label">Pairing code</string>
+    <string name="pref__ripple__pairing_code__none">Not paired with any device</string>
+    <string name="pref__ripple__pairing_code__copied">Pairing code copied</string>
+    <string name="pref__ripple__change_code__label">Change code</string>
+    <string name="pref__ripple__change_code__summary">Pair with a different device using a new code</string>
+    <string name="pref__ripple__change_code__dialog_title">Enter pairing code</string>
+    <string name="pref__ripple__disconnect__label">Disconnect</string>
+    <string name="pref__ripple__disconnect__summary">Forget the current code and close the connection</string>
+    <string name="pref__ripple__group_incoming__label">Incoming text</string>
+    <string name="pref__ripple__consent_mode__label">Consent mode</string>
+    <string name="pref__ripple__group_service__label">Background connection</string>
+    <string name="pref__ripple__keep_connection_alive__label">Keep connection alive</string>
+    <string name="pref__ripple__keep_connection_alive__summary">Stay connected while the keyboard is hidden (shows an ongoing notification)</string>
+    <string name="enum__consent_mode__auto">Insert automatically</string>
+    <string name="enum__consent_mode__auto__description">Received text is inserted at the cursor immediately while the keyboard is visible.</string>
+    <string name="enum__consent_mode__ask">Ask (tap to insert)</string>
+    <string name="enum__consent_mode__ask__description">Received text waits in the Ripple panel until you tap it to insert.</string>
+    <string name="enum__consent_mode__off">Off</string>
+    <string name="enum__consent_mode__off__description">Received text is ignored — the Ripple panel receives nothing.</string>
+
     <!-- Clipboard strings -->
     <string name="clipboard__header_title">Clipboard</string>
     <string name="clipboard__disabled__title">Clipboard history is currently disabled</string>
