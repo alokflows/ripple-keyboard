@@ -99,6 +99,12 @@ Slice 3 — Ripple settings screen + consent mode:
 - **CI:** the build workflow trigger now also fires on `slice-*` push branches.
 - **Strings:** default-locale `settings__ripple__*`, `pref__ripple__*`, and
   `enum__consent_mode__*` resources added following upstream naming.
+- **Fix (panel):** the expanded-compose inline key grid rendered blank key labels
+  (touch targets worked, only the backspace icon painted) because `SnyggButton`'s
+  built-in Material content padding (8dp top + bottom) left less than one text
+  line of content height in the ~25dp rows that layout gives each grid row; the
+  grid keys are now padding-free clickable `SnyggBox`es (same `ripple-key` theme
+  element, centered content) in `RippleInputLayout.InlineKeyGrid`.
 
 Upstream copyright headers and license text are unaltered; upstream source files
 are modified only at the integration points listed above.

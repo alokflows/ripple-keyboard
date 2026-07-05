@@ -19,6 +19,7 @@ package dev.patrickgold.florisboard.ripple
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,6 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import dev.patrickgold.florisboard.R
 import dev.patrickgold.florisboard.editorInstance
@@ -317,6 +319,13 @@ fun RippleInputLayout(
  * A compact self-contained key grid used to type into panel-local fields (the
  * pairing code, the compose-and-send text). It exists because the keyboard's own
  * key input always goes to the target app, never to views inside the IME window.
+ *
+ * The keys are padding-free clickable [SnyggBox]es rather than [SnyggButton]s on
+ * purpose: SnyggButton wraps its content with Material `ButtonDefaults.ContentPadding`
+ * (8dp top + bottom), which in the expanded-compose layout — where each grid row
+ * only gets ~25dp of the panel — left less than one text line of content height,
+ * so the key labels were dropped entirely (blank but tappable keys). A plain box
+ * gives the label the full row height in both the connect and compose layouts.
  */
 @Composable
 private fun InlineKeyGrid(
@@ -326,6 +335,20 @@ private fun InlineKeyGrid(
     onBackspace: () -> Unit,
 ) {
     val rows = remember { listOf("1234567890", "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM") }
+
+    @Composable
+    fun RowScope.Key(weight: Float, onClick: () -> Unit, content: @Composable () -> Unit) {
+        SnyggBox(FlorisImeUi.RippleKey.elementName,
+            modifier = Modifier
+                .weight(weight)
+                .fillMaxHeight(),
+            clickAndSemanticsModifier = Modifier.rippleClickable(role = Role.Button, onClick = onClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            content()
+        }
+    }
+
     Column(modifier = modifier) {
         for ((index, row) in rows.withIndex()) {
             Row(
@@ -334,12 +357,7 @@ private fun InlineKeyGrid(
                     .weight(1f),
             ) {
                 for (char in row) {
-                    SnyggButton(FlorisImeUi.RippleKey.elementName,
-                        onClick = { onKey(char.toString()) },
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight(),
-                    ) {
+                    Key(weight = 1f, onClick = { onKey(char.toString()) }) {
                         SnyggText(
                             text = char.toString(),
                         )
@@ -347,23 +365,13 @@ private fun InlineKeyGrid(
                 }
                 if (index == rows.lastIndex) {
                     if (withSpace) {
-                        SnyggButton(FlorisImeUi.RippleKey.elementName,
-                            onClick = { onKey(" ") },
-                            modifier = Modifier
-                                .weight(1.5f)
-                                .fillMaxHeight(),
-                        ) {
+                        Key(weight = 1.5f, onClick = { onKey(" ") }) {
                             SnyggText(
                                 text = "␣",
                             )
                         }
                     }
-                    SnyggButton(FlorisImeUi.RippleKey.elementName,
-                        onClick = onBackspace,
-                        modifier = Modifier
-                            .weight(1.5f)
-                            .fillMaxHeight(),
-                    ) {
+                    Key(weight = 1.5f, onClick = onBackspace) {
                         SnyggIcon(
                             imageVector = Icons.AutoMirrored.Outlined.Backspace,
                         )
